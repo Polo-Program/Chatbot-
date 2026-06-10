@@ -1,0 +1,56 @@
+import requests 
+
+
+API_KEY = "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"  
+
+promptSistema = """     
+Responde de forma breve.                 
+Utiliza lenguaje sencillo.              
+Incluye ejemplos cuando sea posible.     
+No respondas mas de 5 lineas.           
+"""                                      
+while True:
+    pregunta = input("Hola, ingresa tu pregunta: ")
+
+
+    url = "https://api.groq.com/openai/v1/chat/completions"
+
+
+    headers = {                              
+        "Authorization": f"Bearer {API_KEY}", 
+        "Content-Type": "application/json"   
+    }
+
+    datos = {                                
+        "model": "llama-3.3-70b-versatile",   
+        "messages": [                         
+            {
+                "role": "system",             
+                "content": promptSistema     
+            },
+            {
+                "role": "user",               
+                "content": pregunta           
+            }
+        ],
+        "temperature": 0.5,                   
+        "max_tokens": 300                     
+    }
+
+    respuesta = requests.post(               
+        url,                                 
+        headers=headers,                      
+        json=datos                           
+    )
+
+    resultado = respuesta.json()             
+
+    texto = resultado["choices"][0]["message"]["content"] 
+
+    print("💡", texto)
+    print(texto)            # Muestra la respuesta final
+
+    continuar = input("Otra pregunta (s/n)?:")
+    if continuar.upper() == "N":
+        print("Finalizado")
+        break
